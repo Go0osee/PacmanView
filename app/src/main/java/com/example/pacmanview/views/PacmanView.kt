@@ -23,7 +23,6 @@ class PacmanView(
         private const val X_EYE_COEFFICIENT = 0.55f
         private const val TIME_ANIMATOR = 1000L
         private const val ZERO = 0f
-        private const val DEGREES_45 = 45f
     }
 
     private val pacmanPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -39,6 +38,12 @@ class PacmanView(
         set(value) {
             eyePaint.color = value
             field = value
+        }
+
+    private val pacmanContourPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        .apply {
+            style = Paint.Style.STROKE
+            strokeWidth = 5f
         }
 
     init {
@@ -77,7 +82,7 @@ class PacmanView(
                 }
             }
 
-    private var sweepAngel = ZERO - DEGREES_45
+    private var sweepAngel = ZERO
     private val negativeSweepAngel get() = -sweepAngel
 
     fun startAnimation() {
@@ -102,11 +107,21 @@ class PacmanView(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        canvas.drawArc(oval, START_ANGEL, MAX_ANGEL, true, pacmanPaint)
+        canvas.drawArc(
+            oval,
+            START_ANGEL + negativeSweepAngel,
+            MAX_ANGEL + sweepAngel + sweepAngel,
+            true,
+            pacmanPaint
+        )
 
-        canvas.drawArc(oval, MAX_ANGEL + START_ANGEL, sweepAngel + DEGREES_45, true, pacmanPaint)
-        canvas.drawArc(oval, START_ANGEL, negativeSweepAngel - DEGREES_45, true, pacmanPaint)
-
+        canvas.drawArc(
+            oval,
+            START_ANGEL + negativeSweepAngel,
+            MAX_ANGEL + sweepAngel + sweepAngel,
+            true,
+            pacmanContourPaint
+        )
 
         canvas.drawCircle(
             width * X_EYE_COEFFICIENT,
